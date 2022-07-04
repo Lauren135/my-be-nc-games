@@ -46,6 +46,17 @@ describe("my Express app", () => {
             expect(review).toHaveProperty("category");
             expect(review).toHaveProperty("owner");
             expect(review).toHaveProperty("created_at");
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              category: expect.any(String),
+              owner: expect.any(String),
+              created_at: expect.any(Number),
+            });
           });
         });
     });
@@ -60,13 +71,22 @@ describe("my Express app", () => {
           expect(errorMessage).toBe("Invalid Path");
         });
     });
-    test("404: when invalid Id provided", () => {
+    test("404: when Id provided is not found", () => {
       return request(app)
         .get("/api/reviews/457")
         .expect(404)
         .then(({ body }) => {
           const errorMessage = body.msg;
-          expect(errorMessage).toBe("Invalid Path");
+          expect(errorMessage).toBe("Review ID not found");
+        });
+    });
+    test("400: when invalid Id provided", () => {
+      return request(app)
+        .get("/api/reviews/wrong")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
         });
     });
   });
