@@ -61,6 +61,30 @@ describe("my Express app", () => {
         });
     });
   });
+  describe("PATCH /api/reviews/:review_id", () => {
+    test("updates reviews vote by given number", () => {
+      return request(app)
+        .patch("/api/reviews/3")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          reviews.forEach((review) => {
+            expect(review).toEqual({
+              review_id: 3,
+              title: "Ultimate Werewolf",
+              designer: "Akihisa Okui",
+              owner: "bainesface",
+              review_img_url:
+                "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+              review_body: "We couldn't find the werewolf!",
+              category: "social deduction",
+              created_at: expect.any(String),
+              votes: 6,
+            });
+          });
+        });
+    });
+  });
   describe("Error handling", () => {
     test("404: when incorrect path is provided", () => {
       return request(app)
@@ -83,6 +107,16 @@ describe("my Express app", () => {
     test("400: when invalid Id provided", () => {
       return request(app)
         .get("/api/reviews/wrong")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+    test("400: when passed anything but a number into inc_votes", () => {
+      return request(app)
+        .patch("/api/reviews/3")
+        .send({ inc_votes: "hello" })
         .expect(400)
         .then(({ body }) => {
           const errorMessage = body.msg;

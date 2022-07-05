@@ -27,3 +27,21 @@ exports.selectReviewId = (reviewId) => {
       }
     });
 };
+
+exports.updateReview = (reviewId, update) => {
+  console.log(typeof update);
+  if (typeof update === "string") {
+    return Promise.reject({
+      msg: "Bad request",
+      status: 400,
+    });
+  }
+  return connection
+    .query(
+      `UPDATE reviews SET votes = votes + $2 WHERE review_id = $1 RETURNING *`,
+      [reviewId, update]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
