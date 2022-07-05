@@ -28,6 +28,12 @@ exports.selectReviewId = (reviewId) => {
     });
 };
 
+
+exports.selectUsers = () => {
+  return connection.query(`SELECT * FROM users`).then((result) => {
+    return result.rows;
+  });
+
 exports.updateReview = (reviewId, update) => {
   console.log(typeof update);
   if (typeof update === "string") {
@@ -44,4 +50,5 @@ exports.updateReview = (reviewId, update) => {
     .then((result) => {
       return result.rows;
     });
+
 };

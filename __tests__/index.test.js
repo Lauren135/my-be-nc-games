@@ -124,4 +124,28 @@ describe("my Express app", () => {
         });
     });
   });
+  describe("GET /api/users", () => {
+    test("200: responds with users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
+    });
+    test("404: when incorrect path is provided", () => {
+      return request(app)
+        .get("/api/*")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Invalid Path");
+        });
+    });
+  });
 });
