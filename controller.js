@@ -1,4 +1,4 @@
-const { selectCategories, selectReviewId } = require("./model");
+const { selectCategories, selectReviewId, selectUsers } = require("./model");
 
 exports.getCategories = (req, res) => {
   selectCategories().then((categories) => {
@@ -15,4 +15,10 @@ exports.getReviewId = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getUsers = (req, res) => {
+  selectUsers().then((users) => {
+    res.status(200).send({ users });
+  });
 };
