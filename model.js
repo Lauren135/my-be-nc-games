@@ -13,7 +13,6 @@ exports.selectReviewId = (reviewId) => {
       status: 400,
     });
   }
-
   return connection
     .query("SELECT * FROM reviews WHERE review_id = $1", [reviewId])
     .then((result) => {
@@ -27,12 +26,6 @@ exports.selectReviewId = (reviewId) => {
       }
     });
 };
-
-
-exports.selectUsers = () => {
-  return connection.query(`SELECT * FROM users`).then((result) => {
-    return result.rows;
-  });
 
 exports.updateReview = (reviewId, update) => {
   console.log(typeof update);
@@ -50,5 +43,10 @@ exports.updateReview = (reviewId, update) => {
     .then((result) => {
       return result.rows;
     });
+};
 
+exports.selectUsers = () => {
+  return connection.query(`SELECT * FROM users`).then((result) => {
+    return result.rows;
+  });
 };

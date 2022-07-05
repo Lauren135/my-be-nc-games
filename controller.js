@@ -1,6 +1,9 @@
-
-const { selectCategories, selectReviewId, selectUsers, updateReview} = require("./model");
-
+const {
+  selectCategories,
+  selectReviewId,
+  selectUsers,
+  updateReview,
+} = require("./model");
 
 exports.getCategories = (req, res) => {
   selectCategories().then((categories) => {
@@ -19,12 +22,6 @@ exports.getReviewId = (req, res, next) => {
     });
 };
 
-
-exports.getUsers = (req, res) => {
-  selectUsers().then((users) => {
-    res.status(200).send({ users });
-  });
-
 exports.changeReview = (req, res, next) => {
   const { inc_votes } = req.body;
   const { review_id } = req.params;
@@ -35,5 +32,10 @@ exports.changeReview = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
 
+exports.getUsers = (req, res) => {
+  selectUsers().then((users) => {
+    res.status(200).send({ users });
+  });
 };
