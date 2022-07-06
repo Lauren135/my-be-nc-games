@@ -5,6 +5,7 @@ const {
   getReviewId,
   getUsers,
   changeReview,
+  updatedReview,
 } = require("./controller");
 
 const app = express();
@@ -13,10 +14,9 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewId);
-
-app.get("/api/users", getUsers);
-
 app.patch("/api/reviews/:review_id", changeReview);
+app.get("/api/users", getUsers);
+app.get("/api/reviews/:review_id/comment_count", updatedReview);
 
 app.use("*", (req, res, next) => {
   res.status(404).send({ msg: "Invalid Path" });

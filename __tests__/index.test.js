@@ -29,6 +29,15 @@ describe("my Express app", () => {
           });
         });
     });
+    test("404: when incorrect path is provided", () => {
+      return request(app)
+        .get("/api/*")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Invalid Path");
+        });
+    });
   });
   describe("GET /api/reviews/:review_id", () => {
     test("200: responds with information about given review_id", () => {
@@ -60,9 +69,28 @@ describe("my Express app", () => {
           });
         });
     });
+
+    test("404: when Id provided is not found", () => {
+      return request(app)
+        .get("/api/reviews/457")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Review ID not found");
+        });
+    });
+    test("400: when invalid Id provided", () => {
+      return request(app)
+        .get("/api/reviews/wrong")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
   });
   describe("PATCH /api/reviews/:review_id", () => {
-    test("updates reviews vote by given number", () => {
+    test("200: updates reviews vote by given number", () => {
       return request(app)
         .patch("/api/reviews/3")
         .send({ inc_votes: 1 })
@@ -84,35 +112,6 @@ describe("my Express app", () => {
           });
         });
     });
-  });
-  describe("Error handling", () => {
-    test("404: when incorrect path is provided", () => {
-      return request(app)
-        .get("/api/*")
-        .expect(404)
-        .then(({ body }) => {
-          const errorMessage = body.msg;
-          expect(errorMessage).toBe("Invalid Path");
-        });
-    });
-    test("404: when Id provided is not found", () => {
-      return request(app)
-        .get("/api/reviews/457")
-        .expect(404)
-        .then(({ body }) => {
-          const errorMessage = body.msg;
-          expect(errorMessage).toBe("Review ID not found");
-        });
-    });
-    test("400: when invalid Id provided", () => {
-      return request(app)
-        .get("/api/reviews/wrong")
-        .expect(400)
-        .then(({ body }) => {
-          const errorMessage = body.msg;
-          expect(errorMessage).toBe("Bad request");
-        });
-    });
     test("400: when passed anything but a number into inc_votes", () => {
       return request(app)
         .patch("/api/reviews/3")
@@ -124,6 +123,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("GET /api/users", () => {
     test("200: responds with users", () => {
       return request(app)
@@ -145,6 +145,48 @@ describe("my Express app", () => {
         .then(({ body }) => {
           const errorMessage = body.msg;
           expect(errorMessage).toBe("Invalid Path");
+        });
+    });
+  });
+  describe("GET /api/reviews/:review_id/comment_count", () => {
+    test("200: reviews has comment_count", () => {
+      return request(app)
+        .get("/api/reviews/2/comment_count")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          reviews.forEach((review) => {
+            expect(review).toEqual({
+              review_id: 2,
+              title: "Jenga",
+              designer: "Leslie Scott",
+              owner: "philippaclaire9",
+              review_img_url:
+                "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+              review_body: "Fiddly fun for all the family",
+              category: "dexterity",
+              created_at: expect.any(String),
+              votes: 5,
+              comment_count: expect.any(String),
+            });
+          });
+        });
+    });
+    test("404: when Id provided is not found", () => {
+      return request(app)
+        .get("/api/reviews/457/comment_count")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Review ID not found");
+        });
+    });
+    test("400: when invalid Id provided", () => {
+      return request(app)
+        .get("/api/reviews/wrong/comment_count")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
         });
     });
   });
