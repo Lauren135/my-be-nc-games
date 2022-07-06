@@ -149,7 +149,7 @@ describe("my Express app", () => {
     });
   });
   describe("GET /api/reviews/:review_id/comment_count", () => {
-    test("200: reviews has comment_count", () => {
+    test("200: reviews has comment-count", () => {
       return request(app)
         .get("/api/reviews/2/comment_count")
         .expect(200)
@@ -187,6 +187,52 @@ describe("my Express app", () => {
         .then(({ body }) => {
           const errorMessage = body.msg;
           expect(errorMessage).toBe("Bad request");
+        });
+    });
+  });
+  describe("GET /api/reviews", () => {
+    test("200: responds with all reviews with comment-count sorted by created-at", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("created_at", {
+            descending: true,
+            coerce: true,
+          });
+          reviews.forEach((review) => {
+            expect(review).toHaveProperty("review_id");
+            expect(review).toHaveProperty("title");
+            expect(review).toHaveProperty("review_body");
+            expect(review).toHaveProperty("designer");
+            expect(review).toHaveProperty("review_img_url");
+            expect(review).toHaveProperty("votes");
+            expect(review).toHaveProperty("category");
+            expect(review).toHaveProperty("owner");
+            expect(review).toHaveProperty("created_at");
+            expect(review).toHaveProperty("comment_count");
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              category: expect.any(String),
+              owner: expect.any(String),
+              created_at: expect.any(Number),
+              comment_count: expect.any(String),
+            });
+          });
+        });
+    });
+    test("404: when incorrect path is provided", () => {
+      return request(app)
+        .get("/api/*")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Invalid Path");
         });
     });
   });

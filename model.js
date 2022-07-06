@@ -38,7 +38,7 @@ exports.selectUsers = () => {
   });
 };
 
-exports.selectReview = (reviewId) => {
+exports.selectReviewById = (reviewId) => {
   return connection
     .query(
       `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count FROM reviews 
@@ -55,5 +55,17 @@ exports.selectReview = (reviewId) => {
       } else {
         return result.rows;
       }
+    });
+};
+
+exports.selectReviews = () => {
+  return connection
+    .query(
+      `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count FROM reviews 
+      LEFT JOIN comments ON comments.review_id = reviews.review_id 
+       GROUP BY reviews.review_id ORDER BY reviews.created_at`
+    )
+    .then((result) => {
+      return result.rows;
     });
 };
