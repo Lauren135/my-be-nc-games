@@ -78,13 +78,6 @@ exports.selectReviewComments = (reviewId) => {
       [reviewId]
     )
     .then((result) => {
-      if (result.rows.length === 0) {
-        return Promise.reject({
-          msg: "No comments for given ID",
-          status: 404,
-        });
-      } else {
-        return result.rows;
-      }
+      return result.rows;
     });
 };

@@ -256,13 +256,12 @@ describe("my Express app", () => {
           });
         });
     });
-    test("404: when no comments exist for given ID", () => {
+    test("200: responds with no comments for review-id that does not exist", () => {
       return request(app)
-        .get("/api/reviews/7/comments")
-        .expect(404)
-        .then(({ body }) => {
-          const errorMessage = body.msg;
-          expect(errorMessage).toBe("No comments for given ID");
+        .get("/api/reviews/700/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(0);
         });
     });
     test("400: when invalid Id provided", () => {
