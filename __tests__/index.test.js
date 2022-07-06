@@ -236,4 +236,39 @@ describe("my Express app", () => {
         });
     });
   });
+  describe("GET /api/reviews/:review_id/comments", () => {
+    test("200: responds with comments for given review-id", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          reviews.forEach((review) => {
+            expect(review).toHaveProperty("review_id");
+            expect(review).toHaveProperty("comment_id");
+            expect(review).toHaveProperty("body");
+            expect(review).toHaveProperty("author");
+            expect(review).toHaveProperty("votes");
+            expect(review).toHaveProperty("created_at");
+          });
+        });
+    });
+    test("404: when Id provided is not found", () => {
+      return request(app)
+        .get("/api/reviews/457/comment_count")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Review ID not found");
+        });
+    });
+    test("400: when invalid Id provided", () => {
+      return request(app)
+        .get("/api/reviews/wrong/comment_count")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+  });
 });
