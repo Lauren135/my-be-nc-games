@@ -241,29 +241,33 @@ describe("my Express app", () => {
       return request(app)
         .get("/api/reviews/2/comments")
         .expect(200)
-        .then(({ body: { reviews } }) => {
-          reviews.forEach((review) => {
-            expect(review).toHaveProperty("review_id");
-            expect(review).toHaveProperty("comment_id");
-            expect(review).toHaveProperty("body");
-            expect(review).toHaveProperty("author");
-            expect(review).toHaveProperty("votes");
-            expect(review).toHaveProperty("created_at");
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(3);
+          comments.forEach((comment) => {
+            expect(comment).toHaveProperty("review_id");
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect.objectContaining({
+              review_id: 2,
+            });
           });
         });
     });
-    test("404: when Id provided is not found", () => {
+    test("404: when no comments exist for given ID", () => {
       return request(app)
-        .get("/api/reviews/457/comment_count")
+        .get("/api/reviews/7/comments")
         .expect(404)
         .then(({ body }) => {
           const errorMessage = body.msg;
-          expect(errorMessage).toBe("Review ID not found");
+          expect(errorMessage).toBe("No comments for given ID");
         });
     });
     test("400: when invalid Id provided", () => {
       return request(app)
-        .get("/api/reviews/wrong/comment_count")
+        .get("/api/reviews/wrong/comments")
         .expect(400)
         .then(({ body }) => {
           const errorMessage = body.msg;

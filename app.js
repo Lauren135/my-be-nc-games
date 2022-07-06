@@ -30,7 +30,7 @@ app.use("*", (req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.code) {
     res.status(400).send({ msg: "Bad request" });
-  } else if (err.status) {
+  } else if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
