@@ -69,3 +69,30 @@ exports.selectReviews = () => {
       return result.rows;
     });
 };
+
+exports.selectReviewComments = (reviewId) => {
+  return connection
+    .query(
+      `SELECT * FROM reviews
+      WHERE review_id = $1`,
+      [reviewId]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          msg: "Review ID not found",
+          status: 404,
+        });
+      }
+    })
+    .then(() => {
+      return connection.query(
+        `SELECT * FROM comments
+        WHERE review_id = $1`,
+        [reviewId]
+      );
+    })
+    .then((result) => {
+      return result.rows;
+    });
+};
