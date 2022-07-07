@@ -283,4 +283,50 @@ describe("my Express app", () => {
         });
     });
   });
+  describe("Post /api/reviews/:review_id/comments", () => {
+    test("201: posts comment to comments table", () => {
+      return request(app)
+        .post("/api/reviews/4/comments")
+        .send({ username: "bainesface", body: "I loved this game!" })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).toEqual({
+            comment_id: expect.any(Number),
+            body: "I loved this game!",
+            author: "bainesface",
+            review_id: 4,
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("404: when Id provided is not found", () => {
+      return request(app)
+        .post("/api/reviews/900/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Review ID not found");
+        });
+    });
+    test("400: username provided does not exist", () => {
+      return request(app)
+        .post("/api/reviews/4/comments")
+        .send({ username: "Harry123" })
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+    test("400: when invalid Id provided", () => {
+      return request(app)
+        .get("/api/reviews/wrong/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+  });
 });

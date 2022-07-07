@@ -96,3 +96,43 @@ exports.selectReviewComments = (reviewId) => {
       return result.rows;
     });
 };
+exports.writeReviewComments = (review_id, username, body) => {
+  return connection
+    .query(
+      `SELECT * FROM reviews
+      WHERE review_id = $1`,
+      [review_id]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          msg: "Review ID not found",
+          status: 404,
+        });
+      }
+    })
+    .then(() => {
+      return connection.query(
+        `SELECT * FROM comments
+        WHERE author = $1`,
+        [username]
+      );
+    })
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          msg: "Bad request",
+          status: 400,
+        });
+      }
+    })
+    .then(() => {
+      return connection.query(
+        `INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
+        [review_id, username, body]
+      );
+    })
+    .then((result) => {
+      return result.rows[0];
+    });
+};
