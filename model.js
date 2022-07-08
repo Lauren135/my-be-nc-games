@@ -73,7 +73,6 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   ];
   const validOrder = ["ASC", "DESC", "asc", "desc"];
   if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
-    console.log("here");
     return Promise.reject({
       msg: "Bad request",
       status: 400,
@@ -89,15 +88,26 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
       .then((result) => {
         return result.rows;
       });
-  } else {
+  } else if (category) {
     return connection
-      .query(
-        `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count FROM reviews
+      .query(`SELECT * FROM categories WHERE slug = $1`, [category])
+      .then((result) => {
+        if (result.rows.length === 0) {
+          return Promise.reject({
+            msg: "Bad request",
+            status: 400,
+          });
+        }
+      })
+      .then(() => {
+        return connection.query(
+          `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count FROM reviews
       LEFT JOIN comments ON comments.review_id = reviews.review_id 
       WHERE category = $1 
       GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`,
-        [category]
-      )
+          [category]
+        );
+      })
       .then((result) => {
         return result.rows;
       });

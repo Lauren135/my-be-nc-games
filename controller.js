@@ -55,13 +55,17 @@ exports.updatedReviewById = (req, res, next) => {
     });
 };
 
-exports.getReviews = (req, res) => {
+exports.getReviews = (req, res, next) => {
   const { category } = req.query;
   const { sort_by } = req.query;
   const { order } = req.query;
-  selectReviews(category, sort_by, order).then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+  selectReviews(category, sort_by, order)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 exports.getReviewComments = (req, res, next) => {
   const { review_id } = req.params;
