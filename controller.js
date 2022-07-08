@@ -6,7 +6,7 @@ const {
   selectReviewById,
   selectReviews,
   selectReviewComments,
-  writeReviewComments,
+  insertReviewComments,
 } = require("./model");
 
 exports.getCategories = (req, res) => {
@@ -55,10 +55,17 @@ exports.updatedReviewById = (req, res, next) => {
     });
 };
 
-exports.getReviews = (req, res) => {
-  selectReviews().then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+exports.getReviews = (req, res, next) => {
+  const { category } = req.query;
+  const { sort_by } = req.query;
+  const { order } = req.query;
+  selectReviews(category, sort_by, order)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 exports.getReviewComments = (req, res, next) => {
   const { review_id } = req.params;
@@ -74,12 +81,11 @@ exports.postReviewComment = (req, res, next) => {
   const { review_id } = req.params;
   const { username } = req.body;
   const { body } = req.body;
-  writeReviewComments(review_id, username, body)
+  insertReviewComments(review_id, username, body)
     .then((comment) => {
       res.status(201).send({ comment });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };

@@ -226,6 +226,20 @@ describe("my Express app", () => {
           });
         });
     });
+    test("200: accepts category, sort_by and order queries", () => {
+      return request(app)
+        .get("/api/reviews?category=social+deduction&sort_by=votes&order=desc")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy("votes", {
+            descending: true,
+            coerce: true,
+          });
+          expect.objectContaining({
+            category: "social deduction",
+          });
+        });
+    });
     test("404: when incorrect path is provided", () => {
       return request(app)
         .get("/api/*")
@@ -233,6 +247,33 @@ describe("my Express app", () => {
         .then(({ body }) => {
           const errorMessage = body.msg;
           expect(errorMessage).toBe("Invalid Path");
+        });
+    });
+    test("400: when invalid category is provided", () => {
+      return request(app)
+        .get("/api/reviews?category=wrong&sort_by=votes&order=desc")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+    test("400: when invalid sort_by is provided", () => {
+      return request(app)
+        .get("/api/reviews?category=social+deduction&sort_by=wrong&order=desc")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+    test("400: when invalid order is provided", () => {
+      return request(app)
+        .get("/api/reviews?category=social+deduction&sort_by=votes&order=wrong")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
         });
     });
   });
@@ -309,7 +350,7 @@ describe("my Express app", () => {
           expect(errorMessage).toBe("Review ID not found");
         });
     });
-    test("400: username provided does not exist", () => {
+    test("400: when username provided does not exist", () => {
       return request(app)
         .post("/api/reviews/4/comments")
         .send({ username: "Harry123" })
@@ -322,6 +363,16 @@ describe("my Express app", () => {
     test("400: when invalid Id provided", () => {
       return request(app)
         .get("/api/reviews/wrong/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Bad request");
+        });
+    });
+    test("400: when no username or body provided", () => {
+      return request(app)
+        .post("/api/reviews/4/comments")
+        .send({ username: "", body: "" })
         .expect(400)
         .then(({ body }) => {
           const errorMessage = body.msg;
