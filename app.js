@@ -9,6 +9,7 @@ const {
   getReviews,
   getReviewComments,
   postReviewComment,
+  deleteCommentById,
 } = require("./controller");
 
 const app = express();
@@ -23,6 +24,7 @@ app.get("/api/reviews/:review_id/comment_count", updatedReviewById);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.post("/api/reviews/:review_id/comments", postReviewComment);
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.use("*", (req, res, next) => {
   res.status(404).send({ msg: "Invalid Path" });

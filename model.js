@@ -180,3 +180,17 @@ exports.insertReviewComments = (review_id, username, body) => {
       return result.rows[0];
     });
 };
+exports.removeCommentById = (comment_id) => {
+  return connection
+    .query("DELETE FROM comments WHERE comment_id = $1", [comment_id])
+    .then(({ rowCount }) => {
+      console.log(rowCount);
+      if (rowCount === 0) {
+        return Promise.reject({
+          msg: `Comment_id does not exist`,
+          status: 404,
+        });
+      }
+      return;
+    });
+};
