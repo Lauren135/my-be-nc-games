@@ -380,4 +380,29 @@ describe("my Express app", () => {
         });
     });
   });
+  describe("4. DELETE api/comments/:comment_id", () => {
+    test("204: responds with an empty response body", () => {
+      return request(app)
+        .delete("/api/comments/6")
+        .expect(204)
+        .then(() => {
+          return connection.query(
+            "SELECT * FROM comments WHERE comment_id = 6"
+          );
+        })
+        .then((result) => {
+          expect(result.rows).toEqual([]);
+        });
+    });
+
+    test("404: when Id provided is not found", () => {
+      return request(app)
+        .delete("/api/comments/1000")
+        .expect(404)
+        .then(({ body }) => {
+          const errorMessage = body.msg;
+          expect(errorMessage).toBe("Comment_id does not exist");
+        });
+    });
+  });
 });
