@@ -68,6 +68,7 @@ exports.getReviews = (req, res, next) => {
       next(err);
     });
 };
+
 exports.getReviewComments = (req, res, next) => {
   const { review_id } = req.params;
   selectReviewComments(review_id)
@@ -78,6 +79,7 @@ exports.getReviewComments = (req, res, next) => {
       next(err);
     });
 };
+
 exports.postReviewComment = (req, res, next) => {
   const { review_id } = req.params;
   const { username } = req.body;
@@ -90,6 +92,7 @@ exports.postReviewComment = (req, res, next) => {
       next(err);
     });
 };
+
 exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
   removeCommentById(comment_id)

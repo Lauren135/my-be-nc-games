@@ -39,6 +39,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("GET /api/reviews/:review_id", () => {
     test("200: responds with information about given review_id", () => {
       return request(app)
@@ -89,6 +90,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("PATCH /api/reviews/:review_id", () => {
     test("200: updates reviews vote by given number", () => {
       return request(app)
@@ -148,6 +150,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("GET /api/reviews/:review_id/comment_count", () => {
     test("200: reviews has comment-count", () => {
       return request(app)
@@ -190,6 +193,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("GET /api/reviews", () => {
     test("200: responds with all reviews with comment-count sorted by created-at", () => {
       return request(app)
@@ -277,6 +281,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("GET /api/reviews/:review_id/comments", () => {
     test("200: responds with comments for given review-id", () => {
       return request(app)
@@ -324,6 +329,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("Post /api/reviews/:review_id/comments", () => {
     test("201: posts comment to comments table", () => {
       return request(app)
@@ -380,6 +386,7 @@ describe("my Express app", () => {
         });
     });
   });
+
   describe("4. DELETE api/comments/:comment_id", () => {
     test("204: responds with an empty response body", () => {
       return request(app)

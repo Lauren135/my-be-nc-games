@@ -140,6 +140,7 @@ exports.selectReviewComments = (reviewId) => {
       return result.rows;
     });
 };
+
 exports.insertReviewComments = (review_id, username, body) => {
   return connection
     .query(
@@ -180,6 +181,7 @@ exports.insertReviewComments = (review_id, username, body) => {
       return result.rows[0];
     });
 };
+
 exports.removeCommentById = (comment_id) => {
   return connection
     .query("DELETE FROM comments WHERE comment_id = $1", [comment_id])
