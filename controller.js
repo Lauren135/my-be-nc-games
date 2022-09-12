@@ -9,6 +9,7 @@ const {
   insertReviewComments,
   removeCommentById,
 } = require("./model");
+const endpoints = require("./endpoints.json");
 
 exports.getCategories = (req, res) => {
   selectCategories().then((categories) => {
@@ -102,4 +103,8 @@ exports.deleteCommentById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getApi = (req, res, next) => {
+  res.status(200).send({ endpoints });
 };

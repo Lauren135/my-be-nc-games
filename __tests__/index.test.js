@@ -330,7 +330,7 @@ describe("my Express app", () => {
     });
   });
 
-  describe("Post /api/reviews/:review_id/comments", () => {
+  describe("POST /api/reviews/:review_id/comments", () => {
     test("201: posts comment to comments table", () => {
       return request(app)
         .post("/api/reviews/4/comments")
@@ -387,7 +387,7 @@ describe("my Express app", () => {
     });
   });
 
-  describe("4. DELETE api/comments/:comment_id", () => {
+  describe("DELETE api/comments/:comment_id", () => {
     test("204: responds with an empty response body", () => {
       return request(app)
         .delete("/api/comments/6")
