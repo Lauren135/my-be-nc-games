@@ -1,4 +1,8 @@
 node_modules
-.env.*
+.env.development
+.env.test
 practice.sql
 output.txt
+README.md 
+error-handling.md 
+hosting.md 
