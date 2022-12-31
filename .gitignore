@@ -1,4 +1,6 @@
 node_modules
-.env.*
+.env.development
+.env.test
+.env.production
 practice.sql
 output.txt
